@@ -15,7 +15,8 @@ func main() {
 	e := echo.New()
 
 	e.GET("/healthcheck", healthCheck)
-	e.GET("/ws", websocket.ServeWs)
+	e.GET("/ws/:topic", websocket.ServeWs)
+	e.Static("/", "public")
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

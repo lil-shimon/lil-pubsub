@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -11,6 +12,10 @@ var upgrader = websocket.Upgrader{}
 var rooms = Room{}
 
 func ServeWs(c echo.Context) error {
+
+	topic := c.Param("topic")
+
+	log.Printf("topic: %s", topic)
 
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
@@ -23,7 +28,7 @@ func ServeWs(c echo.Context) error {
 
 	client := &Client{Ws: ws}
 
-	rooms.AddClient(client)
+	rooms.AddSubscription(&Subscription{Topic: topic, Client: client})
 
 	for {
 		_, msg, err := ws.ReadMessage()
@@ -33,7 +38,7 @@ func ServeWs(c echo.Context) error {
 			break
 		}
 
-		rooms.Publish(msg)
+		rooms.Publish(msg, topic)
 	}
 
 	return nil
