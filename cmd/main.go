@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
-	"github.com/lil-shimon/lil-pubsub.git/server/websocket"
+	"github.com/lil-shimon/lil-pubsub.git/internal/websocket"
 )
 
 func healthCheck(c echo.Context) error {
@@ -16,7 +16,7 @@ func main() {
 
 	e.GET("/healthcheck", healthCheck)
 	e.GET("/ws/:topic", websocket.ServeWs)
-	e.Static("/", "public")
+	e.Static("/", "web")
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
